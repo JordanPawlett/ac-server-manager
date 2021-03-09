@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: server-manager-udp
+  name: server-manager-udp
+  annotations: null
+spec:
+  ports:
+    - name: server-udp
+      port: 9600
+      targetPort: 9600
+      protocol: UDP
+  selector:
+    app: server-manager-udp
+  type: LoadBalancer
+  # loadBalancerIP: 34.117.130.44

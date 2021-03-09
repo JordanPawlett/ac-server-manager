@@ -1,0 +1,7 @@
+cmd/server-manager/assetto/
+server-install
+*.log
+node_modules
+k8s
+data
+.DS_Store

@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: server-manager
+  name: server-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server-manager
+  template:
+    metadata:
+      labels:
+        app: server-manager
+    spec:
+      # hostNetwork: true
+      # dnsPolicy: ClusterFirstWithHostNet
+      tolerations:  # allow a Pod instance to run on Master - optional
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+        - name: server-manager
+          image: assettoservermanager
+          resources:
+            requests:
+              cpu: 300m
+              memory: 2000Mi
+            limits:
+              cpu: 300m
+              memory: 2000Mi
+          ports:
+            # the port that the server manager runs on
+            - containerPort: 8772
+              # the port that the assetto server runs on (may vary depending on your configuration inside server manager)
+            - containerPort: 9600
+              # the port that the assetto server HTTP API runs on.
+            - containerPort: 8081
+          volumeMounts:
+            - name: server-manager-claim
+              mountPath: /home/assetto/server-manager
+      initContainers:
+        - name: server-manager-config
+          # copy config and db files into the server if they don't already exist
+          image: assettoservermanager-config
+          volumeMounts:
+            - name: server-manager-claim
+              mountPath: /home/assetto/server-manager
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
+      volumes:
+        - name: server-manager-claim
+          persistentVolumeClaim:
+            claimName: server-manager-claim
+      restartPolicy: Always

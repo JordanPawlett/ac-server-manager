@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  server-manager:
+    image: assettoservermanager:latest
+    ports:
+      # the port that the server manager runs on
+      - "80:8772"
+      # the port that the assetto server runs on (may vary depending on your configuration inside server manager)
+      - "9600:9600"
+      - "9600:9600/udp"
+      # the port that the assetto server HTTP API runs on.
+      - "8081:8081"
+    # you may also wish to bind your configured UDP plugin ports here.
+    volumes:
+      # volume mount the entire server install so that
+      # content etc persists across restarts
+      # - ./server-install:/home/assetto/server-manager/assetto
+      # - ./data/config.yml:/home/assetto/server-manager/config.yml
+      # - ./data/server_manager:/home/assetto/server-manager/server_manager
+
+      - /mnt/disks/assetto/server-install:/home/assetto/server-manager/assetto
+      - /mnt/disks/assetto/data/config.yml:/home/assetto/server-manager/config.yml
+      - /mnt/disks/assetto/data/server_manager:/home/assetto/server-manager/server_manager
